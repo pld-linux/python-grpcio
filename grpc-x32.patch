@@ -1,0 +1,11 @@
+--- grpc-1.39.0/src/core/lib/gpr/wrap_memcpy.cc.orig	2022-02-15 17:56:37.812321632 +0100
++++ grpc-1.39.0/src/core/lib/gpr/wrap_memcpy.cc	2022-02-15 17:57:36.515336944 +0100
+@@ -29,7 +29,7 @@
+ extern "C" {
+ #ifdef __linux__
+ #if defined(__x86_64__) && !defined(GPR_MUSL_LIBC_COMPAT) && \
+-    !defined(__ANDROID__)
++    !defined(__ANDROID__) && !defined(__ILP32__)
+ __asm__(".symver memcpy,memcpy@GLIBC_2.2.5");
+ void* __wrap_memcpy(void* destination, const void* source, size_t num) {
+   return memcpy(destination, source, num);

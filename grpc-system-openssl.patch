@@ -1,0 +1,11 @@
+--- grpc-1.39.0/setup.py.orig	2022-02-15 07:57:52.802003651 +0100
++++ grpc-1.39.0/setup.py	2022-02-15 18:04:13.841293750 +0100
+@@ -116,7 +116,7 @@ def _env_bool_value(env_name, default):
+ 
+ 
+ BUILD_WITH_BORING_SSL_ASM = _env_bool_value('GRPC_BUILD_WITH_BORING_SSL_ASM',
+-                                            'True')
++                                            'False')
+ 
+ # Export this environment variable to override the platform variant that will
+ # be chosen for boringssl assembly optimizations. This option is useful when

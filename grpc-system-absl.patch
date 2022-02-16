@@ -1,0 +1,49 @@
+--- grpc-1.39.0/setup.py.orig	2021-07-21 00:39:39.000000000 +0200
++++ grpc-1.39.0/setup.py	2022-02-15 18:06:14.182592092 +0100
+@@ -156,6 +156,8 @@ BUILD_WITH_SYSTEM_CARES = _env_bool_valu
+ # runtime, the shared library must be installed
+ BUILD_WITH_SYSTEM_RE2 = _env_bool_value('GRPC_PYTHON_BUILD_SYSTEM_RE2', 'False')
+ 
++BUILD_WITH_SYSTEM_ABSL = _env_bool_value('GRPC_PYTHON_BUILD_SYSTEM_ABSL', 'False')
++
+ # Export this variable to force building the python extension with a statically linked libstdc++.
+ # At least on linux, this is normally not needed as we can build manylinux-compatible wheels on linux just fine
+ # without statically linking libstdc++ (which leads to a slight increase in the wheel size).
+@@ -229,7 +231,7 @@ def check_linker_need_libatomic():
+ EXTRA_ENV_COMPILE_ARGS = os.environ.get('GRPC_PYTHON_CFLAGS', None)
+ EXTRA_ENV_LINK_ARGS = os.environ.get('GRPC_PYTHON_LDFLAGS', None)
+ if EXTRA_ENV_COMPILE_ARGS is None:
+-    EXTRA_ENV_COMPILE_ARGS = ' -std=c++11'
++    EXTRA_ENV_COMPILE_ARGS = ' -std=c++17'
+     if 'win32' in sys.platform:
+         if sys.version_info < (3, 5):
+             EXTRA_ENV_COMPILE_ARGS += ' -D_hypot=hypot'
+@@ -298,6 +300,10 @@ if BUILD_WITH_SYSTEM_RE2:
+     CORE_C_FILES = filter(lambda x: 'third_party/re2' not in x, CORE_C_FILES)
+     RE2_INCLUDE = (os.path.join('/usr', 'include', 're2'),)
+ 
++if BUILD_WITH_SYSTEM_ABSL:
++    CORE_C_FILES = filter(lambda x: 'third_party/abseil-cpp' not in x, CORE_C_FILES)
++    ABSL_INCLUDE = (os.path.join('/usr', 'include'),)
++
+ EXTENSION_INCLUDE_DIRECTORIES = ((PYTHON_STEM,) + CORE_INCLUDE + ABSL_INCLUDE +
+                                  ADDRESS_SORTING_INCLUDE + CARES_INCLUDE +
+                                  RE2_INCLUDE + SSL_INCLUDE + UPB_INCLUDE +
+@@ -327,6 +333,17 @@ if BUILD_WITH_SYSTEM_CARES:
+     EXTENSION_LIBRARIES += ('cares',)
+ if BUILD_WITH_SYSTEM_RE2:
+     EXTENSION_LIBRARIES += ('re2',)
++if BUILD_WITH_SYSTEM_ABSL:
++    EXTENSION_LIBRARIES += ('absl_bad_optional_access', 'absl_bad_variant_access', 'absl_base',
++                            'absl_civil_time', 'absl_cord', 'absl_cord_internal',
++                            'absl_cordz_functions', 'absl_cordz_handle', 'absl_cordz_info',
++                            'absl_debugging_internal', 'absl_demangle_internal',
++                            'absl_exponential_biased', 'absl_graphcycles_internal', 'absl_int128',
++                            'absl_log_severity', 'absl_malloc_internal', 'absl_raw_logging_internal',
++                            'absl_spinlock_wait', 'absl_stacktrace', 'absl_status', 'absl_statusor',
++                            'absl_str_format_internal', 'absl_strings', 'absl_strings_internal',
++                            'absl_symbolize', 'absl_synchronization', 'absl_throw_delegate',
++                            'absl_time', 'absl_time_zone')
+ 
+ DEFINE_MACROS = (('_WIN32_WINNT', 0x600),)
+ asm_files = []
