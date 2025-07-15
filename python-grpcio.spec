@@ -66,11 +66,11 @@ Dokumentacja API biblioteki Pythona gRPC.
 
 %prep
 %setup -q -n grpc-%{version}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
+%patch -P0 -p1
+%patch -P1 -p1
+%patch -P2 -p1
+%patch -P3 -p1
+%patch -P4 -p1
 
 %build
 export GRPC_PYTHON_BUILD_SYSTEM_ABSL=1
